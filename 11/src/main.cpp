@@ -3,12 +3,20 @@
 #include <chrono>
 #include <string>
 
+#ifdef TIMEIT
+#define DOUT(x)
+#else
+#define DOUT(x) x
+#endif
+
+typedef int ResultType;
+
 #ifdef PART1
-int solve(std::ifstream& file) {
+ResultType solve(std::ifstream& file) {
 
 }
 #else
-int solve(std::ifstream& file) {
+ResultType solve(std::ifstream& file) {
 
 }
 #endif
@@ -44,7 +52,7 @@ int main(int argc, char** argv) {
 int main(int argc, char** argv) {
     #define ITERATIONS 1000.
     auto startTime = std::chrono::high_resolution_clock::now();
-    int result;
+    ResultType result;
     for (int i = 0; i < ITERATIONS; i++) {
 #ifdef TEST
         std::ifstream file("./src/test.txt");

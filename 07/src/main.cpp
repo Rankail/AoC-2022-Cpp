@@ -2,14 +2,112 @@
 #include <iostream>
 #include <chrono>
 #include <string>
+#include <memory>
+#include <unordered_map>
+
+#ifdef TIMEIT
+#define DOUT(x)
+#else
+#define DOUT(x) x
+#endif
+
+typedef unsigned ResultType;
+
+struct Dir {
+    std::shared_ptr<Dir> parent;
+    std::unordered_map<std::string, std::shared_ptr<Dir>> dirs = std::unordered_map<std::string, std::shared_ptr<Dir>>();
+    unsigned size = 0;
+
+    Dir(std::shared_ptr<Dir> parent) : parent(parent) {}
+};
+
+std::shared_ptr<Dir> getTreeFromLines(std::ifstream& file) {
+    std::string line;
+    std::getline(file, line);
+    auto root = std::make_shared<Dir>(nullptr);
+    auto cwd = root;
+    while (std::getline(file, line)) {
+        if (line == "$ ls") {
+            while (std::getline(file, line) && line.substr(0, 4) != "$ cd") {
+                if (line[0] == 'd') {
+                    cwd->dirs.emplace(line.substr(4), std::make_shared<Dir>(cwd));
+                }
+                else {
+                    cwd->size += atoi(line.substr(0, line.find(' ')).c_str());
+                }
+            }
+        }
+        if (line == "$ cd ..") {
+            cwd = cwd->parent;
+        }
+        else if (line.substr(0, 4) == "$ cd") {
+            cwd = cwd->dirs[line.substr(5)];
+        }
+    }
+    return root;
+}
+
+void printTreeSub(std::shared_ptr<Dir> dir, int depth = 0) {
+    std::string off = "";
+    for (int i = 0; i <= depth; i++) {
+        off += '\t';
+    }
+    for (auto& d : dir->dirs) {
+        std::cout << off << d.first << " " << d.second->size << std::endl;
+        printTreeSub(d.second, depth + 1);
+    }
+}
+
+void printTree(std::shared_ptr<Dir> root) {
+    std::cout << "/ " << root->size << std::endl;
+    printTreeSub(root);
+}
+
+ResultType getSize(std::shared_ptr<Dir> dir) {
+    for (auto& d : dir->dirs) {
+        dir->size += getSize(d.second);
+    }
+    return dir->size;
+}
 
 #ifdef PART1
-int solve(std::ifstream& file) {
+void getSumDirsMax100k(unsigned& sum, std::shared_ptr<Dir> dir) {
+    if (dir->size < 100000) {
+        sum += dir->size;
+    }
 
+    for (auto& d : dir->dirs) {
+        getSumDirsMax100k(sum, d.second);
+    }
+}
+
+ResultType solve(std::ifstream& file) {
+    auto root = getTreeFromLines(file);
+    getSize(root);
+    
+    DOUT(printTree(root));
+    unsigned sum = 0;
+    getSumDirsMax100k(sum, root);
+    return sum;
 }
 #else
-int solve(std::ifstream& file) {
+void getMinOverTarget(unsigned& m, const unsigned target, std::shared_ptr<Dir> dir) {
+    if (dir->size < target) return;
 
+    m = std::min(m, dir->size);
+    for (auto& d : dir->dirs) {
+        getMinOverTarget(m, target, d.second);
+    }
+}
+
+ResultType solve(std::ifstream& file) {
+    auto root = getTreeFromLines(file);
+    getSize(root);
+
+    auto to_free = root->size - 40000000;
+    unsigned m = root->size;
+    getMinOverTarget(m, to_free, root);
+    return m;
 }
 #endif
 
@@ -44,7 +142,7 @@ int main(int argc, char** argv) {
 int main(int argc, char** argv) {
     #define ITERATIONS 1000.
     auto startTime = std::chrono::high_resolution_clock::now();
-    int result;
+    ResultType result;
     for (int i = 0; i < ITERATIONS; i++) {
 #ifdef TEST
         std::ifstream file("./src/test.txt");

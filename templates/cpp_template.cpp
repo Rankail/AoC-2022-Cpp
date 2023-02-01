@@ -3,6 +3,12 @@
 #include <chrono>
 #include <string>
 
+#ifdef TIMEIT
+#define DOUT(x)
+#else
+#define DOUT(x) x
+#endif
+
 typedef int ResultType;
 
 #ifdef PART1
