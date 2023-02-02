@@ -1,9 +1,10 @@
-#include "Part1.h"
+#include "part1.h"
 
-#include <string>
 #include <iostream>
+#include <fstream>
+#include <string>
 
-int Part1::run(std::ifstream& file) {
+void Part1::run(std::ifstream& file) {
     regx = 1;
     cycle = 0;
     sum = 0;
@@ -21,13 +22,17 @@ int Part1::run(std::ifstream& file) {
         cycle++;
         endCycle();
         regx += num;
-
     }
-	return sum;
+
+    result = sum;
 }
 
 void Part1::endCycle() {
-    if ((cycle+20) % 40 == 0) {
+    if ((cycle + 20) % 40 == 0) {
         sum += cycle * regx;
     }
+}
+
+void Part1::printResult() {
+    std::cout << "Result: " << result << std::endl;
 }

@@ -4,12 +4,17 @@
 
 class Part1 {
 public:
-	Part1() {}
-	int run(std::ifstream& file);
-	void endCycle();
+    Part1() {}
+    
+    void run(std::ifstream& file);
+    void printResult();
+
+    void endCycle();
 
 private:
-	int regx;
-	int cycle;
-	int sum;
+    int result;
+
+    int regx;
+    int cycle;
+    int sum;
 };

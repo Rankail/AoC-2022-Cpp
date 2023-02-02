@@ -9,36 +9,32 @@ project "05"
     
     files {
         "src/**.h",
-        "src/**.cpp"
+        "src/**.cpp",
+        "src/**.txt"
     }
 
-    prebuildcommands
-    {
-        ('{COPYFILE} "%{prj.location}src/*.txt" "%{wks.location}bin/"' .. outputdir .. '"/%{prj.name}"'),
-    }
-
-    filter "configurations:1DT"
+    filter "configurations:1 Example"
         defines { "DEBUG", "TEST", "PART1"}
         symbols "On"
 
-    filter "configurations:1DR"
+    filter "configurations:1 Real"
         defines { "DEBUG", "PART1" }
         symbols "On"
 
-    filter "configurations:1R"
-        defines { "NDEBUG", "TIMEIT", "PART1" }
+    filter "configurations:1 Real Opt"
+        defines { "NDEBUG", "PART1" }
         optimize "Speed"
 
-    filter "configurations:2DT"
-        defines { "DEBUG", "TEST"}
+        filter "configurations:2 Example"
+        defines { "DEBUG", "TEST", "PART2"}
         symbols "On"
 
-    filter "configurations:2DR"
-        defines { "DEBUG"}
+    filter "configurations:2 Real"
+        defines { "DEBUG", "PART2" }
         symbols "On"
 
-    filter "configurations:2R"
-        defines { "NDEBUG", "TIMEIT" }
+    filter "configurations:2 Real Opt"
+        defines { "NDEBUG", "PART2" }
         optimize "Speed"
 
     

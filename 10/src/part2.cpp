@@ -1,9 +1,10 @@
-#include "Part2.h"
+#include "part2.h"
 
-#include <string>
 #include <iostream>
+#include <fstream>
+#include <string>
 
-bool* Part2::run(std::ifstream& file) {
+void Part2::run(std::ifstream& file) {
     for (int i = 0; i < 240; i++) {
         board[i] = false;
     }
@@ -27,12 +28,19 @@ bool* Part2::run(std::ifstream& file) {
         regx += num;
 
     }
-
-    return board;
 }
 
 void Part2::draw() {
-    if (std::abs(regx-(cycle%40))<2) {
+    if (std::abs(regx - (cycle % 40)) < 2) {
         board[cycle] = true;
     }
+}
+
+void Part2::printResult() {
+    std::cout << "Result:";
+    for (int i = 0; i < 240; i++) {
+        if (i % 40 == 0) std::cout << std::endl;
+        std::cout << (board[i] ? '#' : ' ');
+    }
+    std::cout << std::endl;;
 }

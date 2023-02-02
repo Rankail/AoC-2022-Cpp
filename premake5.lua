@@ -1,7 +1,7 @@
 workspace "AoC"
     startproject "01"
     architecture "x86_64"
-    configurations { "1DT", "1DR", "1R", "2DT", "2DR", "2R" }
+    configurations { "1 Example", "1 Real", "1 Real Opt", "2 Example", "2 Real", "2 Real Opt" }
 
     flags
 	{

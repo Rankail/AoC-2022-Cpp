@@ -1,12 +1,12 @@
 import os
 
-cpp_template = open("templates/cpp_template.cpp").read()
-premake_template = open("templates/premake_template.lua").read()
-
-def createIfNotExists(path: str, template: str = ""):
-    if os.path.isfile(path): return
-    with open(path, "x") as file:
-        file.write(template)
+templates: list[tuple[bool, str, str]] = []
+for root, _, files in os.walk("templates"):
+    for f in files:
+        if f.startswith("o_"):
+            templates.append((True, f"{root[10:]}/{f[2:]}", open(f"{root}/{f}").read()))
+        else:
+            templates.append((False, f"{root[10:]}/{f}", open(f"{root}/{f}").read()))
 
 for i in range(1, 26):
     p = f"{i:02}"
@@ -14,8 +14,11 @@ for i in range(1, 26):
         os.mkdir(p)
     if not os.path.isdir(p+"/src"):
         os.mkdir(p+"/src")
-    with open(f"{p}/premake5.lua", "w") as file:
-        file.write(premake_template.replace("<#>", p))
-    createIfNotExists(f"{p}/src/main.cpp", cpp_template)
-    createIfNotExists(f"{p}/src/test.txt")
-    createIfNotExists(f"{p}/src/input.txt")
+    for ov, tp, tc in templates:
+        if ov:
+            with open(f"{p}/{tp}", "w") as file:
+                file.write(tc.replace("<#>", p))
+        elif not os.path.isfile(f"{p}/{tp}"):
+            with open(f"{p}/{tp}", "x") as file:
+                file.write(tc.replace("<#>", p))
+        
