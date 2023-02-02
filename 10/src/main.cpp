@@ -3,6 +3,9 @@
 #include <chrono>
 #include <string>
 
+#include "Part1.h"
+#include "part2.h"
+
 #ifdef TIMEIT
 #define DOUT(x)
 #else
@@ -13,11 +16,13 @@ typedef int ResultType;
 
 #ifdef PART1
 ResultType solve(std::ifstream& file) {
-
+    Part1 part = Part1();
+    return part.run(file);
 }
 #else
-ResultType solve(std::ifstream& file) {
-
+bool* solve(std::ifstream& file) {
+    Part2 part = Part2();
+    return part.run(file);
 }
 #endif
 
@@ -52,7 +57,7 @@ int main(int argc, char** argv) {
 int main(int argc, char** argv) {
     #define ITERATIONS 1000.
     auto startTime = std::chrono::high_resolution_clock::now();
-    ResultType result;
+    bool* result;
     for (int i = 0; i < ITERATIONS; i++) {
 #ifdef TEST
         std::ifstream file("./src/test.txt");
@@ -69,7 +74,13 @@ int main(int argc, char** argv) {
     }
     auto endTime = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Result: " << result << "\nFinished " << (int)ITERATIONS << " iterations after "
+    std::cout << "Result:";
+    for (int i = 0; i < 240; i++) {
+        if (i % 40 == 0) std::cout << "\n";
+        std::cout << (result[i] ? '#' : '.');
+    }
+
+    std::cout  << "\nFinished " << (int)ITERATIONS << " iterations after "
         << std::chrono::duration<double>(endTime - startTime).count() << " s with an average of "
         << std::chrono::duration<double, std::milli>(endTime - startTime).count() / ITERATIONS << " ms\n";
 
