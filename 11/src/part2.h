@@ -10,5 +10,5 @@ public:
     void printResult();
 
 private:
-    int result;
+    uint64_t result;
 };
