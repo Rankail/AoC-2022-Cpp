@@ -30,7 +30,6 @@ public:
     void run(std::ifstream& file);
     void printResult();
 
-    int dist(Pos p);
     char elevation(Pos p);
 
 private:
